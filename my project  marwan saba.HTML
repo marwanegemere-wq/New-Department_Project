@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
+  <title>Marwan Shop | black & white + smooth nav</title>
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Google Font: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      background: #ffffff;
+      scroll-behavior: smooth; /* smooth scrolling for nav */
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: transparent;
+      color: #000000;
+      line-height: 1.5;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* ---------- ANIMATED BACKGROUND (infinite drifting dots) ---------- */
+    .bg-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+      background-color: #ffffff;
+      background-image: 
+        radial-gradient(circle at 20% 30%, #000000 3%, transparent 4%),
+        radial-gradient(circle at 80% 70%, #000000 2.5%, transparent 3.5%),
+        radial-gradient(circle at 40% 40%, #000000 2%, transparent 3%),
+        radial-gradient(circle at 10% 90%, #000000 4%, transparent 5%);
+      background-size: 
+        120px 120px,
+        180px 180px,
+        240px 240px,
+        300px 300px;
+      animation: drift 28s linear infinite;
+    }
+
+    @keyframes drift {
+      0% {
+        background-position: 
+          0 0,
+          0 0,
+          0 0,
+          0 0;
+      }
+      100% {
+        background-position: 
+          120px 120px,
+          180px 180px,
+          240px 240px,
+          300px 300px;
+      }
+    }
+    /* ----------------------------------------------------------------- */
+
+    /* black & white master palette */
+    .bg-black { background-color: #000000; }
+    .bg-white { background-color: #ffffff; }
+    .text-white { color: #ffffff; }
+    .text-black { color: #000000; }
+    .border-black { border: 1px solid #000000; }
+    .border-bottom-black { border-bottom: 2px solid #000000; }
+
+    /* header */
+    .main-header {
+      background-color: #000000;
+      color: #ffffff;
+      padding: 1rem 2rem 0.5rem 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 4px solid #ffffff;
+      box-shadow: 0 4px 0 #000000;
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 1.8rem;
+      letter-spacing: -0.02em;
+    }
+    .logo i {
+      margin-right: 8px;
+      color: #ffffff;
+      font-size: 2rem;
+    }
+
+    .welcome-message {
+      background: #000000;
+      color: #ffffff;
+      text-align: center;
+      padding: 0.5rem;
+      font-size: 1.3rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid #ffffff;
+    }
+    .welcome-message i {
+      margin: 0 8px;
+    }
+
+    /* ---------- NEW CATEGORY NAVIGATION BAR ---------- */
+    .category-nav {
+      background: #ffffff;
+      border-bottom: 3px solid #000000;
+      border-top: 2px solid #000000;
+      padding: 0.7rem 1rem;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      box-shadow: 0 4px 0 #000000;
+    }
+    .category-nav a {
+      color: #000000;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.2rem;
+      padding: 0.4rem 1.2rem;
+      border: 2px solid #000000;
+      border-radius: 40px;
+      background: #ffffff;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .category-nav a:hover {
+      background: #000000;
+      color: #ffffff;
+    }
+    /* ----------------------------------------------- */
+
+    .cart-summary {
+      background: #ffffff;
+      color: #000000;
+      padding: 0.5rem 1.2rem;
+      border-radius: 40px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 2px solid #000000;
+    }
+    .cart-summary i {
+      font-size: 1.3rem;
+      color: #000000;
+    }
+    .cart-count-badge {
+      background: #000000;
+      color: #ffffff;
+      border-radius: 20px;
+      padding: 2px 10px;
+      font-size: 0.9rem;
+      margin-left: 6px;
+    }
+
+    /* main grid */
+    .store-container {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2rem;
+      padding: 2rem;
+      flex: 1;
+      max-width: 1600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* products section */
+    .products-section h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 3px solid #000000;
+      display: inline-block;
+    }
+
+    .category-block {
+      margin-bottom: 2.5rem;
+      scroll-margin-top: 20px; /* so nav scroll doesn't hide behind header */
+    }
+    .category-title {
+      font-size: 1.6rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      padding-left: 0.5rem;
+      border-left: 6px solid #000000;
+      background: #f2f2f2;
+      padding: 0.4rem 1rem;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.8rem;
+    }
+
+    /* product card */
+    .product-card {
+      background: #ffffff;
+      border: 2px solid #000000;
+      border-radius: 16px;
+      padding: 1.2rem 1rem 1.2rem;
+      transition: 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 6px 6px 0 #000000;
+    }
+    .product-card:hover {
+      transform: translate(-3px, -3px);
+      box-shadow: 10px 10px 0 #000000;
+    }
+
+    .product-image-container {
+      position: relative;
+      width: 100%;
+      height: 160px;
+      margin-bottom: 0.8rem;
+    }
+
+    .product-image, .product-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 2px solid #000000;
+      background-color: #f0f0f0;
+    }
+
+    .product-video {
+      border: 2px solid #000000;
+      display: none;
+    }
+
+    .product-name {
+      font-weight: 700;
+      font-size: 1.3rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .product-category {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: #000000;
+      color: #ffffff;
+      display: inline-block;
+      padding: 0.2rem 0.8rem;
+      border-radius: 30px;
+      margin: 0.3rem 0 0.6rem;
+      align-self: flex-start;
+    }
+
+    .product-price {
+      font-weight: 700;
+      font-size: 1.5rem;
+      margin: 0.3rem 0 0.5rem;
+    }
+    .product-price::before {
+      content: '$';
+      font-size: 1rem;
+      vertical-align: super;
+      margin-right: 2px;
+    }
+
+    .video-toggle-btn {
+      background: #ffffff;
+      color: #000000;
+      border: 2px solid #000000;
+      border-radius: 40px;
+      padding: 0.5rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin: 0.4rem 0 0.6rem;
+    }
+    .video-toggle-btn:hover {
+      background: #000000;
+      color: #ffffff;
+    }
+
+    .add-to-cart-btn {
+      background: #000000;
+      color: #ffffff;
+      border: 2px solid #000000;
+      border-radius: 40px;
+      padding: 0.7rem 0.5rem;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: auto;
+    }
+    .add-to-cart-btn i {
+      font-size: 1rem;
+    }
+    .add-to-cart-btn:hover {
+      background: #ffffff;
+      color: #000000;
+    }
+
+    /* cart sidebar */
+    .cart-sidebar {
+      background: #f7f7f7;
+      border: 3px solid #000000;
+      border-radius: 24px;
+      padding: 1.5rem 1.2rem;
+      box-shadow: 8px 8px 0 #000000;
+      align-self: start;
+      position: sticky;
+      top: 1.5rem;
+    }
+
+    .cart-sidebar h3 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 3px solid #000000;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .cart-sidebar h3 i {
+      font-size: 2rem;
+    }
+
+    .cart-items {
+      max-height: 400px;
+      overflow-y: auto;
+      margin-bottom: 1.5rem;
+      padding-right: 4px;
+    }
+
+    .cart-item {
+      background: #ffffff;
+      border: 2px solid #000000;
+      border-radius: 40px;
+      padding: 0.7rem 1rem;
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .cart-item-info {
+      display: flex;
+      flex-direction: column;
+      min-width: 110px;
+    }
+    .cart-item-name {
+      font-weight: 700;
+      font-size: 1rem;
+    }
+    .cart-item-price {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #333;
+    }
+
+    .cart-item-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .cart-qty-btn {
+      background: #000000;
+      color: #ffffff;
+      border: 1px solid #000000;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.1s;
+    }
+    .cart-qty-btn:hover {
+      background: #ffffff;
+      color: #000000;
+    }
+    .cart-qty-btn.remove-btn {
+      background: #000000;
+      color: #ffffff;
+      border-radius: 30px;
+      width: auto;
+      padding: 0 12px;
+      gap: 5px;
+      font-size: 0.8rem;
+    }
+    .cart-qty-btn.remove-btn i {
+      margin-right: 4px;
+    }
+    .cart-qty-btn.remove-btn:hover {
+      background: #ffffff;
+      color: #000000;
+      border: 1px solid #000;
+    }
+
+    .cart-item-qty {
+      font-weight: 700;
+      margin: 0 4px;
+      min-width: 20px;
+      text-align: center;
+    }
+
+    .cart-total {
+      font-size: 1.7rem;
+      font-weight: 700;
+      border-top: 3px solid #000000;
+      padding-top: 1rem;
+      margin-top: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+    }
+    .cart-total span:last-child::before {
+      content: '$';
+      font-size: 1.2rem;
+      margin-right: 2px;
+    }
+
+    .checkout-btn {
+      background: #000000;
+      color: #ffffff;
+      border: none;
+      border-radius: 60px;
+      padding: 1rem;
+      font-weight: 700;
+      font-size: 1.3rem;
+      width: 100%;
+      margin-top: 1.2rem;
+      cursor: pointer;
+      border: 2px solid #000000;
+      transition: 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    .checkout-btn:hover {
+      background: #ffffff;
+      color: #000000;
+    }
+
+    .empty-cart-msg {
+      text-align: center;
+      padding: 2rem 1rem;
+      background: #ffffff;
+      border: 2px dashed #000000;
+      border-radius: 40px;
+      font-weight: 500;
+    }
+
+    /* footer */
+    .main-footer {
+      background: #000000;
+      color: #ffffff;
+      padding: 1.2rem 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 4px solid #ffffff;
+      letter-spacing: 0.3px;
+    }
+
+    .footer-left a {
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: 0.2s;
+    }
+    .footer-left a:hover {
+      color: #cccccc;
+    }
+    .footer-left i {
+      font-size: 1.8rem;
+    }
+
+    .footer-right audio {
+      filter: invert(1);
+      height: 32px;
+    }
+
+    /* responsive */
+    @media (max-width: 800px) {
+      .store-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      .cart-sidebar {
+        position: static;
+      }
+      .main-header {
+        padding: 1rem;
+      }
+      .logo {
+        font-size: 1.4rem;
+      }
+      .main-footer {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+      }
+    }
+    @media (max-width: 480px) {
+      .product-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- animated background layer -->
+  <div class="bg-animation"></div>
+
+  <header class="main-header">
+    <div class="logo">
+      <i class="fas fa-microchip"></i> Marwan Shop
+    </div>
+    <div class="cart-summary" id="cartSummary">
+      <i class="fas fa-shopping-cart"></i>
+      <span>cart</span>
+      <span class="cart-count-badge" id="cartCount">0</span>
+    </div>
+  </header>
+
+  <!-- welcome message -->
+  <div class="welcome-message">
+    <i class="fas fa-star"></i> Welcome to my new project 3/3 <i class="fas fa-star"></i>
+  </div>
+
+  <!-- NEW: category navigation bar -->
+  <nav class="category-nav">
+    <a href="#category-computer"><i class="fas fa-desktop"></i> Computers</a>
+    <a href="#category-phone"><i class="fas fa-mobile-alt"></i> Phones</a>
+    <a href="#category-watch"><i class="fas fa-clock"></i> Watches</a>
+  </nav>
+
+  <div class="store-container">
+    <!-- PRODUCT SECTION -->
+    <section class="products-section">
+      <h2><i class="fas fa-cube"></i> essentials</h2>
+      <div id="productListContainer"></div>
+    </section>
+
+    <!-- CART SIDEBAR -->
+    <aside class="cart-sidebar" id="cartSidebar">
+      <h3><i class="fas fa-bag-shopping"></i> YOUR CART</h3>
+      <div class="cart-items" id="cartItemsContainer">
+        <div class="empty-cart-msg">cart is empty — add some tech</div>
+      </div>
+      <div class="cart-total" id="cartTotal">
+        <span>TOTAL</span>
+        <span>0</span>
+      </div>
+      <button class="checkout-btn" id="checkoutBtn"><i class="fas fa-lock"></i> CHECKOUT</button>
+    </aside>
+  </div>
+
+  <footer class="main-footer">
+    <div class="footer-left">
+      <a href="https://www.instagram.com/marwan__max7?igsh=MTRiN3k2bzdydmRnYQ==" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-instagram"></i> marwan__max7
+      </a>
+    </div>
+    <div class="footer-right">
+      <audio controls loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+        Your browser does not support audio.
+      </audio>
+    </div>
+  </footer>
+
+  <script>
+    (function() {
+      // ----- PRODUCT DATA WITH IMAGES AND VIDEO IDS -----
+      const products = [
+        // computers
+        { 
+          id: 1, 
+          name: 'MacBook Pro 14"', 
+          category: 'Computer', 
+          price: 1999, 
+          image: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=300&auto=format&fit=crop',
+          videoId: '2v3WcwGqdJE'
+        },
+        { 
+          id: 2, 
+          name: 'Dell XPS 13 Plus', 
+          category: 'Computer', 
+          price: 1399, 
+          image: 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=300&auto=format&fit=crop',
+          videoId: 'kKHW0AlMkFo'
+        },
+        // phones
+        { 
+          id: 3, 
+          name: 'iPhone 15 Pro', 
+          category: 'Phone', 
+          price: 1099, 
+          image: 'https://www.startpage.com/av/proxy-image?piurl=https%3A%2F%2Ftse1.mm.bing.net%2Fth%2Fid%2FOIP._NCF3dG5Z2hj5gjbySjpigHaEK%3Fcb%3Ddefcache2%26pid%3DApi%26defcache%3D1&sp=1771167886T725ff52a55f3f1268da54d8856fa05804aa9c70bc077aee2564cf83e597bbe42',
+          videoId: 'cJojpGB_On4'
+        },
+        { 
+          id: 4, 
+          name: 'Samsung Galaxy S24', 
+          category: 'Phone', 
+          price: 999, 
+          image: 'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=300&auto=format&fit=crop',
+          videoId: 'G_S2fPqGM_8'
+        },
+        // smart watches
+        { 
+          id: 5, 
+          name: 'Apple Watch Ultra 2', 
+          category: 'Watch', 
+          price: 799, 
+          image: 'https://www.startpage.com/av/proxy-image?piurl=https%3A%2F%2Fwww.stuff.tv%2Fwp-content%2Fuploads%2Fsites%2F2%2F2023%2F09%2FApple-Watch-Ultra-2-vs-Watch-Ultra-lead.jpg%3Fw%3D1080&sp=1771167785T68c9fe7ae6e6241b48a6809c3a303f9756998174ef6a1b2617cdebd431df5e73',
+          videoId: '63nEuH9heqE'
+        },
+        { 
+          id: 6, 
+          name: 'Galaxy Watch6 Classic', 
+          category: 'Watch', 
+          price: 399, 
+          image: 'https://static1.pocketnowimages.com/wordpress/wp-content/uploads/wm/2023/07/samsung-galaxy-watch-6-and-watch-6-classic-hero-15.jpg',
+          videoId: '7Wq0Nq5l6zM'
+        }
+      ];
+
+      // Pre‑compute embed URLs
+      products.forEach(p => {
+        p.embedUrl = `https://www.youtube.com/embed/${p.videoId}?autoplay=1&rel=0&modestbranding=1`;
+      });
+
+      // ---------- CART STATE ----------
+      let cart = [];
+
+      // DOM elements
+      const productContainer = document.getElementById('productListContainer');
+      const cartItemsDiv = document.getElementById('cartItemsContainer');
+      const cartTotalSpan = document.querySelector('#cartTotal span:last-child');
+      const cartCountSpan = document.getElementById('cartCount');
+
+      // cart render
+      function renderCart() {
+        if (cart.length === 0) {
+          cartItemsDiv.innerHTML = `<div class="empty-cart-msg"><i class="fas fa-box-open"></i> cart is empty — add some tech</div>`;
+        } else {
+          let html = '';
+          cart.forEach(item => {
+            html += `
+              <div class="cart-item" data-cart-id="${item.id}">
+                <div class="cart-item-info">
+                  <span class="cart-item-name">${item.name}</span>
+                  <span class="cart-item-price">$${item.price}</span>
+                </div>
+                <div class="cart-item-actions">
+                  <button class="cart-qty-btn" data-action="decr" data-id="${item.id}"><i class="fas fa-minus"></i></button>
+                  <span class="cart-item-qty">${item.quantity}</span>
+                  <button class="cart-qty-btn" data-action="incr" data-id="${item.id}"><i class="fas fa-plus"></i></button>
+                  <button class="cart-qty-btn remove-btn" data-action="remove" data-id="${item.id}"><i class="fas fa-trash"></i> remove</button>
+                </div>
+              </div>
+            `;
+          });
+          cartItemsDiv.innerHTML = html;
+        }
+
+        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        cartTotalSpan.innerText = total;
+
+        const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+        cartCountSpan.innerText = itemCount;
+      }
+
+      // cart modifiers
+      function addToCart(product) {
+        const existing = cart.find(item => item.id === product.id);
+        if (existing) {
+          existing.quantity += 1;
+        } else {
+          cart.push({ id: product.id, name: product.name, price: product.price, quantity: 1 });
+        }
+        renderCart();
+      }
+
+      function incrementItem(id) {
+        const item = cart.find(i => i.id === id);
+        if (item) { item.quantity += 1; renderCart(); }
+      }
+      function decrementItem(id) {
+        const item = cart.find(i => i.id === id);
+        if (!item) return;
+        if (item.quantity > 1) { item.quantity -= 1; } else { cart = cart.filter(i => i.id !== id); }
+        renderCart();
+      }
+      function removeItem(id) {
+        cart = cart.filter(i => i.id !== id);
+        renderCart();
+      }
+
+      // render products with category IDs for navigation
+      function renderProducts() {
+        const categories = ['Computer', 'Phone', 'Watch'];
+        let productHtml = '';
+
+        categories.forEach(cat => {
+          const catProducts = products.filter(p => p.category === cat);
+          if (catProducts.length === 0) return;
+
+          let iconClass = 'fa-desktop';
+          let catId = 'computer';
+          if (cat === 'Phone') { iconClass = 'fa-mobile-alt'; catId = 'phone'; }
+          if (cat === 'Watch') { iconClass = 'fa-clock'; catId = 'watch'; }
+          
+          // Add id for navigation
+          productHtml += `<div class="category-block" id="category-${catId}">`;
+          productHtml += `<div class="category-title"><i class="fas ${iconClass}"></i> ${cat}s</div>`;
+          productHtml += `<div class="product-grid">`;
+
+          catProducts.forEach(prod => {
+            productHtml += `
+              <div class="product-card" data-product-id="${prod.id}">
+                <div class="product-image-container">
+                  <img class="product-image" src="${prod.image}" alt="${prod.name}" data-product-id="${prod.id}">
+                  <iframe class="product-video" width="100%" height="160" src="about:blank" 
+                    frameborder="0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen
+                    data-product-id="${prod.id}"></iframe>
+                </div>
+                <div class="product-name">${prod.name}</div>
+                <span class="product-category">${prod.category}</span>
+                <div class="product-price">${prod.price}</div>
+                <button class="video-toggle-btn" data-product-id="${prod.id}">▶ Watch video</button>
+                <button class="add-to-cart-btn" data-id="${prod.id}"><i class="fas fa-cart-plus"></i> ADD TO CART</button>
+              </div>
+            `;
+          });
+
+          productHtml += `</div></div>`;
+        });
+
+        productContainer.innerHTML = productHtml;
+      }
+
+      // ----- VIDEO TOGGLE -----
+      document.addEventListener('click', (e) => {
+        const toggleBtn = e.target.closest('.video-toggle-btn');
+        if (!toggleBtn) return;
+
+        e.preventDefault();
+        const productId = parseInt(toggleBtn.dataset.productId);
+        const card = toggleBtn.closest('.product-card');
+        const img = card.querySelector('.product-image');
+        const iframe = card.querySelector('.product-video');
+        const product = products.find(p => p.id === productId);
+
+        if (iframe.style.display !== 'block') {
+          if (product && product.embedUrl) {
+            iframe.src = product.embedUrl;
+            iframe.style.display = 'block';
+            img.style.display = 'none';
+            toggleBtn.innerHTML = '✖ Close video';
+          } else {
+            alert('Video not available for this product.');
+          }
+        } else {
+          iframe.src = 'about:blank';
+          iframe.style.display = 'none';
+          img.style.display = 'block';
+          toggleBtn.innerHTML = '▶ Watch video';
+        }
+      });
+
+      // ----- ADD TO CART -----
+      productContainer.addEventListener('click', (e) => {
+        const addBtn = e.target.closest('.add-to-cart-btn');
+        if (!addBtn) return;
+        const prodId = parseInt(addBtn.getAttribute('data-id'));
+        const product = products.find(p => p.id === prodId);
+        if (product) addToCart(product);
+      });
+
+      // ----- CART ACTIONS -----
+      cartItemsDiv.addEventListener('click', (e) => {
+        const btn = e.target.closest('button');
+        if (!btn) return;
+        const action = btn.getAttribute('data-action');
+        const id = parseInt(btn.getAttribute('data-id'));
+        if (action === 'incr') incrementItem(id);
+        else if (action === 'decr') decrementItem(id);
+        else if (action === 'remove') removeItem(id);
+      });
+
+      // ----- CHECKOUT -----
+      document.getElementById('checkoutBtn').addEventListener('click', () => {
+        if (cart.length === 0) {
+          alert('🛒 Cart is empty – add some gear!');
+        } else {
+          const total = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
+          alert(`🧾 Demo checkout – total $${total}. Thanks for visiting Marwan Shop!`);
+        }
+      });
+
+      // initial render
+      renderProducts();
+      renderCart();
+    })();
+  </script>
+</body>
+</html>
